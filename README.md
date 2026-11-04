@@ -99,9 +99,22 @@ El servidor arranca en `http://localhost:3000`. La base de datos se crea automá
 9. Generar recordatorio IA → mensaje generado (plantilla si no hay proveedor).
 10. Error de conexión: sin servidor, los fallos se muestran como mensajes de error, no silenciosos.
 
-## Despliegue
+## Despliegue en Vercel (serverless + PostgreSQL)
 
-El proyecto es un proceso Node.js estándar. Desplegar en cualquier proveedor que ejecute Node (Railway, Render, Fly.io, etc.), definir `PORT`, `JWT_SECRET` y, opcionalmente, variables de IA/SMTP/Stripe. La base de datos SQLite se guarda en disco persistente.
+Vercel es serverless, por lo que no se puede usar SQLite ni un scheduler en proceso. Requiere:
+
+1. Una base de datos PostgreSQL (Neon, Supabase, Railway, etc.) y su `DATABASE_URL`.
+2. Conectar el repo en Vercel; el build usa `@vercel/node` para `api/index.js` y sirve `client/public/` como estático.
+3. Variables de entorno en Vercel:
+   - `DATABASE_URL` (PostgreSQL)
+   - `JWT_SECRET` (cambiar en producción)
+   - `CRON_SECRET` (secreto para proteger `/api/automations/run`)
+   - `AI_PROVIDER=openrouter`, `AI_API_KEY`, `AI_BASE_URL`, `AI_MODEL` (opcional; sin ellas se usan plantillas)
+   - `STRIPE_PUBLISHABLE_KEY`, `STRIPE_SECRET_KEY` (opcional, pagos reales)
+4. El cron de Vercel (`vercel.json`) ejecuta `POST /api/automations/run` cada 5 minutos, autenticado con header `x-cron-secret: <CRON_SECRET>`.
+
+Para desarrollo local con Vercel: `vercel dev` (requiere CLI de Vercel y `.env` con las variables arriba).
+
 
 ## Licencia
 

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/index.js", "use": "@vercel/node" },
+    { "src": "client/public/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    { "src": "/(.*\\.(css|js|png|jpg|ico|svg|woff2?))", "dest": "/client/public/$1" },
+    { "src": "/(.*)", "dest": "/client/public/index.html" }
+  ],
+  "crons": [
+    { "path": "/api/automations/run", "schedule": "*/5 * * * *" }
+  ]
+}
