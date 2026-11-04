@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InvoiceNudge AI</title>
+  <link rel="preload" as="style" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark"></div>
+        <span class="brand-name">InvoiceNudge<span class="brand-ai"> AI</span></span>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="nav-item" data-route="dashboard" href="#/">Dashboard</a>
+        <a class="nav-item" data-route="invoices" href="#/invoices">Facturas</a>
+        <a class="nav-item" data-route="clients" href="#/clients">Clientes</a>
+        <a class="nav-item" data-route="reminders" href="#/reminders">Recordatorios IA</a>
+        <a class="nav-item" data-route="automations" href="#/automations">Automatizaciones</a>
+        <a class="nav-item" data-route="settings" href="#/settings">Ajustes</a>
+        <a class="nav-item" data-route="profile" href="#/profile">Perfil</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="nav-item nav-logout" id="btnLogout">Cerrar sesión</button>
+        <div class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+          <span class="theme-icon" id="themeIcon">🌙</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menú">☰</button>
+
+    <!-- Main content -->
+    <main class="main">
+      <header class="topbar">
+        <h1 class="topbar-title" id="pageTitle">Dashboard</h1>
+        <div class="topbar-right">
+          <span class="topbar-user" id="topbarUser">Usuario</span>
+        </div>
+      </header>
+
+      <!-- Toast -->
+      <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+      <!-- Pages -->
+      <section id="pageLogin" class="page auth-page">
+        <div class="auth-card">
+          <div class="auth-header">
+            <div class="brand-mark-small"></div>
+            <h2>Crear cuenta</h2>
+            <p>Únete a InvoiceNudge AI. Gratis para empezar.</p>
+          </div>
+          <form id="formRegister">
+            <div class="field">
+              <label>Nombre completo</label>
+              <input type="text" name="name" required placeholder="Juan Pérez" />
+            </div>
+            <div class="field">
+              <label>Correo electrónico</label>
+              <input type="email" name="email" required placeholder="tú@empresa.com" />
+            </div>
+            <div class="field">
+              <label>Contraseña</label>
+              <input type="password" name="password" required minlength="6" placeholder="••••••••" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Crear cuenta</button>
+            <p class="auth-footer">¿Ya tienes cuenta? <a href="#/login">Inicia sesión</a></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="pageLoginForm" class="page auth-page">
+        <div class="auth-card">
+          <div class="auth-header">
+            <div class="brand-mark-small"></div>
+            <h2>Iniciar sesión</h2>
+            <p>Accede a tus facturas y recordatorios.</p>
+          </div>
+          <form id="formLogin">
+            <div class="field">
+              <label>Correo electrónico</label>
+              <input type="email" name="email" required placeholder="tú@empresa.com" />
+            </div>
+            <div class="field">
+              <label>Contraseña</label>
+              <input type="password" name="password" required placeholder="••••••••" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
+            <p class="auth-footer">¿Olvidaste tu contraseña? <a href="#/forgot">Recuperarla</a></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="pageForgot" class="page auth-page">
+        <div class="auth-card">
+          <div class="auth-header">
+            <div class="brand-mark-small"></div>
+            <h2>Recuperar contraseña</h2>
+            <p>Ingresa tu correo para recibir instrucciones.</p>
+          </div>
+          <form id="formForgot">
+            <div class="field">
+              <label>Correo electrónico</label>
+              <input type="email" name="email" required placeholder="tú@empresa.com" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Enviar instrucciones</button>
+            <p class="auth-footer">¿Recuerdas tu contraseña? <a href="#/login">Inicia sesión</a></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="pageDashboard" class="page dashboard-page">
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <div class="stat-label">Facturas totales</div>
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-sub" id="statTotalSub">en el sistema</div>
+          </div>
+          <div class="stat-card stat-pending">
+            <div class="stat-label">Pendientes</div>
+            <div class="stat-value" id="statPending">0</div>
+            <div class="stat-sub">Pendientes de cobro</div>
+          </div>
+          <div class="stat-card stat-overdue">
+            <div class="stat-label">Vencidas</div>
+            <div class="stat-value" id="statOverdue">0</div>
+            <div class="stat-sub">Requieren atención</div>
+          </div>
+          <div class="stat-card stat-paid">
+            <div class="stat-label">Pagadas</div>
+            <div class="stat-value" id="statPaid">0</div>
+            <div class="stat-sub">Total cobrado</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="card col-7">
+            <div class="card-header">
+              <h3>Evolución mensual</h3>
+              <span class="badge" id="planBadge">Free</span>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chartEvolution" height="200"></canvas>
+            </div>
+          </div>
+          <div class="card col-5">
+            <div class="card-header">
+              <h3>Resumen de cobro</h3>
+            </div>
+            <div class="summary-list">
+              <div class="summary-item">
+                <span class="summary-label">Pendiente de cobro</span>
+                <span class="summary-value" id="sumPending">0.00</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Total cobrado</span>
+                <span class="summary-value" id="sumPaid">0.00</span>
+              </div>
+            </div>
+            <div class="ai-note" id="aiNote"></div>
+          </div>
+        </div>
+
+        <div class="card full">
+          <div class="card-header">
+            <h3>Actividad reciente</h3>
+            <a href="#/invoices" class="btn btn-sm btn-outline">Ver todas</a>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>Factura</th><th>Cliente</th><th>Estado</th><th>Importe</th><th>Actualizada</th></tr>
+              </thead>
+              <tbody id="tbodyActivity"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="pageInvoices" class="page list-page">
+        <div class="page-header">
+          <div>
+            <h2>Facturas</h2>
+            <p>Gestiona tus facturas de clientes.</p>
+          </div>
+          <button class="btn btn-primary" id="btnNewInvoice">+ Nueva factura</button>
+        </div>
+
+        <div class="filters">
+          <select id="filtStatus"><option value="">Todos los estados</option><option value="draft">Borrador</option><option value="sent">Enviada</option><option value="paid">Pagada</option><option value="overdue">Vencida</option><option value="cancelled">Cancelada</option></select>
+          <select id="filtClient"><option value="">Todos los clientes</option></select>
+          <input type="text" id="filtSearch" placeholder="Buscar número, cliente o descripción" />
+          <select id="filtSort"><option value="created_at desc">Más recientes</option><option value="created_at asc">Más antiguas</option><option value="amount desc">Importe mayor</option><option value="due_date asc">Vencimiento próximo</option></select>
+          <button class="btn btn-outline btn-sm" id="btnClearFilters">Limpiar</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Número</th><th>Cliente</th><th>Estado</th><th>Vencimiento</th><th>Importe</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyInvoices"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyInvoices" style="display:none">No se encontraron facturas.</div>
+
+        <!-- Invoice modal -->
+        <div class="modal" id="modalInvoice" aria-hidden="true">
+          <div class="modal-backdrop" id="modalInvoiceBackdrop"></div>
+          <div class="modal-panel">
+            <button class="modal-close" id="modalInvoiceClose">×</button>
+            <h3 id="modalInvoiceTitle">Nueva factura</h3>
+            <form id="formInvoice">
+              <input type="hidden" name="id" />
+              <div class="grid-2">
+                <div class="field"><label>Número de factura</label><input type="text" name="invoice_number" required placeholder="INV-001" /></div>
+                <div class="field"><label>Cliente</label><select name="client_id" id="invClientSelect"><option value="">Sin cliente</option></select></div>
+                <div class="field"><label>Estado</label><select name="status"><option value="draft">Borrador</option><option value="sent">Enviada</option><option value="paid">Pagada</option><option value="overdue">Vencida</option><option value="cancelled">Cancelada</option></select></div>
+                <div class="field"><label>Fecha emisión</label><input type="date" name="issue_date" /></div>
+                <div class="field"><label>Fecha vencimiento</label><input type="date" name="due_date" required /></div>
+                <div class="field"><label>Moneda</label><select name="currency"><option value="EUR">EUR</option><option value="USD">USD</option><option value="GBP">GBP</option><option value="MXN">MXN</option><option value="BRL">BRL</option></select></div>
+              </div>
+              <div class="field"><label>Descripción</label><input type="text" name="description" placeholder="Descripción de la factura" /></div>
+              <div class="field"><label>Importe</label><div class="input-group"><span class="input-prefix">0.00</span><input type="number" name="amount" step="0.01" min="0" required placeholder="0" /></div></div>
+              <div class="field"><label>Notas</label><textarea name="notes" rows="3" placeholder="Notas adicionales"></textarea></div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="modalInvoiceCancel">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar factura</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Mark paid modal -->
+        <div class="modal" id="modalPay" aria-hidden="true">
+          <div class="modal-backdrop" id="modalPayBackdrop"></div>
+          <div class="modal-panel">
+            <button class="modal-close" id="modalPayClose">×</button>
+            <h3>Marcar como pagada</h3>
+            <p id="modalPayText"></p>
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" id="modalPayCancel">Cancelar</button>
+              <button type="button" class="btn btn-success" id="modalPayConfirm">Sí, marcar pagada</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delete modal -->
+        <div class="modal" id="modalDelete" aria-hidden="true">
+          <div class="modal-backdrop" id="modalDeleteBackdrop"></div>
+          <div class="modal-panel">
+            <button class="modal-close" id="modalDeleteClose">×</button>
+            <h3>Eliminar factura</h3>
+            <p id="modalDeleteText"></p>
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" id="modalDeleteCancel">Cancelar</button>
+              <button type="button" class="btn btn-danger" id="modalDeleteConfirm">Sí, eliminar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pageClients" class="page list-page">
+        <div class="page-header">
+          <div>
+            <h2>Clientes</h2>
+            <p>Lista de clientes de tus facturas.</p>
+          </div>
+          <button class="btn btn-primary" id="btnNewClient">+ Nuevo cliente</button>
+        </div>
+        <input type="text" id="filtClientSearch" placeholder="Buscar cliente..." />
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>Nombre</th><th>Email</th><th>Facturas</th><th>Acciones</th></tr></thead>
+            <tbody id="tbodyClients"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyClients" style="display:none">No hay clientes.</div>
+
+        <div class="modal" id="modalClient" aria-hidden="true">
+          <div class="modal-backdrop" id="modalClientBackdrop"></div>
+          <div class="modal-panel">
+            <button class="modal-close" id="modalClientClose">×</button>
+            <h3 id="modalClientTitle">Nuevo cliente</h3>
+            <form id="formClient">
+              <input type="hidden" name="id" />
+              <div class="grid-2">
+                <div class="field"><label>Nombre</label><input type="text" name="name" required /></div>
+                <div class="field"><label>Email</label><input type="email" name="email" /></div>
+                <div class="field"><label>Dirección</label><input type="text" name="address" /></div>
+                <div class="field"><label>ID fiscal</label><input type="text" name="tax_id" /></div>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="modalClientCancel">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar cliente</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="pageReminders" class="page list-page">
+        <div class="page-header">
+          <div>
+            <h2>Recordatorios IA</h2>
+            <p>Genera mensajes personalizados para cobrar facturas pendientes.</p>
+          </div>
+          <button class="btn btn-primary" id="btnNewReminder">+ Generar recordatorio</button>
+        </div>
+
+        <div class="filters">
+          <select id="filtRemType"><option value="">Todos los tipos</option></select>
+          <select id="filtRemTone"><option value="">Todos los tonos</option></select>
+          <input type="text" id="filtRemSearch" placeholder="Buscar factura o mensaje" />
+          <span class="ai-badge" id="aiProviderBadge"></span>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>Factura</th><th>Tipo</th><th>Tono</th><th>Mensaje</th><th>IA</th><th>Creado</th><th>Acciones</th></tr></thead>
+            <tbody id="tbodyReminders"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyReminders" style="display:none">No hay recordatorios.</div>
+
+        <!-- Generate reminder modal -->
+        <div class="modal" id="modalReminder" aria-hidden="true">
+          <div class="modal-backdrop" id="modalReminderBackdrop"></div>
+          <div class="modal-panel">
+            <button class="modal-close" id="modalReminderClose">×</button>
+            <h3 id="modalReminderTitle">Generar recordatorio</h3>
+            <form id="formReminder">
+              <div class="field"><label>Factura</label><select name="invoice_id" id="remInvoiceSelect" required><option value="">Seleccionar factura</option></select></div>
+              <div class="grid-3">
+                <div class="field"><label>Tipo</label><select name="reminder_type" id="remType"></select></div>
+                <div class="field"><label>Tono</label><select name="tone" id="remTone"></select></div>
+                <div class="field"><label>Idioma</label><select name="language"><option value="es">Español</option><option value="en">Inglés</option></select></div>
+              </div>
+              <div class="field"><label>Mensaje generado</label><textarea name="message" id="remMessage" rows="6" placeholder="El mensaje aparecerá aquí..." readonly></textarea></div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="btnGenerateAI">Generar con IA</button>
+                <button type="button" class="btn btn-outline" id="modalReminderCancel">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar recordatorio</button>
+              </div>
+              <div class="hint" id="remHint"></div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Edit message modal -->
+        <div class="modal" id="modalEditReminder" aria-hidden="true">
+          <div class="modal-backdrop" id="modalEditReminderBackdrop"></div>
+          <div class="modal-panel">
+            <button class="modal-close" id="modalEditReminderClose">×</button>
+            <h3>Editar recordatorio</h3>
+            <form id="formEditReminder">
+              <input type="hidden" name="id" />
+              <div class="field"><label>Mensaje</label><textarea name="message" rows="6" required></textarea></div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="modalEditReminderCancel">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="pageAutomations" class="page list-page">
+        <div class="page-header">
+          <div>
+            <h2>Automatizaciones</h2>
+            <p>Programa recordatorios automáticos por factura.</p>
+          </div>
+          <button class="btn btn-primary" id="btnNewAutomation">+ Nueva automatización</button>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>Nombre</th><th>Tipo</th><th>Tono</th><th>Programación</th><th>Estado</th><th>Última ejecución</th><th>Acciones</th></tr></thead>
+            <tbody id="tbodyAutomations"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyAutomations" style="display:none">No hay automatizaciones.</div>
+
+        <div class="modal" id="modalAutomation" aria-hidden="true">
+          <div class="modal-backdrop" id="modalAutomationBackdrop"></div>
+          <div class="modal-panel">
+            <button class="modal-close" id="modalAutomationClose">×</button>
+            <h3 id="modalAutomationTitle">Nueva automatización</h3>
+            <form id="formAutomation">
+              <input type="hidden" name="id" />
+              <div class="grid-2">
+                <div class="field"><label>Nombre</label><input type="text" name="name" required /></div>
+                <div class="field"><label>Descripción</label><input type="text" name="description" /></div>
+                <div class="field"><label>Tipo de recordatorio</label><select name="reminder_type"></select></div>
+                <div class="field"><label>Tono</label><select name="tone"></select></div>
+                <div class="field"><label>Idioma</label><select name="language"><option value="es">Español</option><option value="en">Inglés</option></select></div>
+                <div class="field"><label>Cron (ej. 0 9 * * *)</label><input type="text" name="schedule_cron" placeholder="0 9 * * *" /></div>
+                <div class="field"><label>Condiciones (JSON)</label><textarea name="conditions" rows="2" placeholder='{"status":"overdue"}'></textarea><div class="hint">Déjalo vacío para todas las facturas.</div></div>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="modalAutomationCancel">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar automatización</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="pageSettings" class="page list-page">
+        <div class="page-header">
+          <div>
+            <h2>Ajustes</h2>
+            <p>Configura correo, plan y preferencias.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><h3>Configuración de correo (SMTP)</h3></div>
+            <form id="formSmtp">
+              <div class="field"><label>Host SMTP</label><input type="text" name="smtp_host" placeholder="smtp.example.com" /></div>
+              <div class="field"><label>Puerto</label><input type="text" name="smtp_port" placeholder="587" /></div>
+              <div class="field"><label>Usuario</label><input type="text" name="smtp_user" /></div>
+              <div class="field"><label>Contraseña</label><input type="password" name="smtp_pass" /></div>
+              <div class="field"><label>Remitente (from)</label><input type="email" name="smtp_from" /></div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="btnSmtpTest">Probar conexión</button>
+                <button type="submit" class="btn btn-primary">Guardar configuración</button>
+              </div>
+              <div class="hint smtp-status" id="smtpStatus"></div>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><h3>Plan y uso</h3></div>
+            <div class="plan-card">
+              <div class="plan-name" id="planName">Free</div>
+              <div class="plan-limits" id="planLimits"></div>
+            </div>
+            <div class="usage-list" id="usageList"></div>
+            <div class="stripe-note" id="stripeNote"></div>
+            <div class="form-actions">
+              <button class="btn btn-outline btn-block" id="btnUpgrade">Cambiar plan</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pageProfile" class="page list-page">
+        <div class="page-header">
+          <div>
+            <h2>Perfil</h2>
+            <p>Tus datos personales y de empresa.</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><h3>Datos personales</h3></div>
+            <form id="formProfile">
+              <div class="field"><label>Nombre</label><input type="text" name="name" required /></div>
+              <div class="field"><label>Correo</label><input type="email" name="email" readonly /></div>
+              <button type="submit" class="btn btn-primary">Guardar perfil</button>
+            </form>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Datos de empresa</h3></div>
+            <form id="formCompany">
+              <div class="field"><label>Nombre de empresa</label><input type="text" name="company_name" /></div>
+              <div class="field"><label>Dirección</label><input type="text" name="company_address" /></div>
+              <div class="field"><label>ID fiscal</label><input type="text" name="company_tax_id" /></div>
+              <div class="field"><label>Moneda predeterminada</label><select name="currency"><option value="EUR">EUR</option><option value="USD">USD</option><option value="GBP">GBP</option><option value="MXN">MXN</option><option value="BRL">BRL</option></select></div>
+              <div class="field"><label>Idioma</label><select name="language"><option value="es">Español</option><option value="en">Inglés</option></select></div>
+              <button type="submit" class="btn btn-primary">Guardar empresa</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
