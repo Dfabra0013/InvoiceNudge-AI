@@ -1,0 +1,16 @@
+program,official_url,award_range_usd,scope_type,tests_executed,tests_pending,confirmed_vulns
+IDENTITY,https://microsoft.com/msrc/bounty-microsoft-identity,375-100000,Cloud Identity,Passive doc review,Active testing pending approval,0
+AZURE,https://www.microsoft.com/en-us/msrc/bounty-microsoft-azure,400-60000,Cloud,Passive doc review,Active testing pending approval,0
+COPILOT,https://www.microsoft.com/en-us/msrc/bounty-ai,100-30000,AI,Passive doc review,Active testing pending approval,0
+XBOX,https://www.microsoft.com/en-us/msrc/bounty-xbox,400-20000,Cloud Gaming,Passive doc review,Active testing pending approval,0
+AZURE_DEVOPS,https://www.microsoft.com/en-us/msrc/bounty-azure-devops,400-20000,DevOps,Passive doc review,Active testing pending approval,0
+DYNAMICS_POWER_PLATFORM,http://www.microsoft.com/msrc/bounty-dynamics,400-60000,Business Apps,Passive doc review,Active testing pending approval,0
+DEFENDER,https://www.microsoft.com/en-us/msrc/bounty-defender,400-20000,Security APIs,Passive doc review,Active testing pending approval,0
+M365,https://microsoft.com/msrc/bounty-microsoft-cloud,300-20000,Productivity Cloud,Passive doc review,Active testing pending approval,0
+DOTNET,https://www.microsoft.com/en-us/msrc/bounty-dot-net-core,up to 15000,Runtime,Passive doc review,Active testing pending approval,0
+OPEN_SOURCE,https://www.microsoft.com/en-us/msrc/opensourcebountyprogram,up to 15000,Open Source,Passive doc review,Active testing pending approval,0
+HYPER_V,https://www.microsoft.com/en-us/msrc/bounty-hyper-v,up to 250000,Hypervisor,Passive doc review,Active testing pending approval,0
+WINDOWS_INSIDER,https://www.microsoft.com/en-us/msrc/bounty-windows-insider-preview,up to 100000,OS Preview,Passive doc review,Active testing pending approval,0
+APPLICATIONS_ON_PREM,https://www.microsoft.com/en-us/msrc/bounty-applications,up to 30000,On-Prem Apps,Passive doc review,Active testing pending approval,0
+EDGE,https://www.microsoft.com/en-us/msrc/bounty-new-edge,up to 30000,Browser,Passive doc review,Active testing pending approval,0
+M365_INSIDER,https://www.microsoft.com/en-us/msrc/bounty-office-insider,up to 15000,Office Preview,Passive doc review,Active testing pending approval,0
